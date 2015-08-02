@@ -5,6 +5,7 @@
 int switchPin = 8;
 int ledPin = 13;
 boolean lastButton = LOW;
+boolean currentButton = LOW;
 boolean isLedOn = false;
 
 void setup() {
@@ -13,12 +14,20 @@ void setup() {
 
 }
 
-void loop() {
-  if(digitalRead(switchPin) == HIGH && lastButton == LOW){
-    isLedOn != isLedOn;
-    lastButton = HIGH;
-  }else{
-    lastButton = digitalRead(switchPin);
+boolean debounce(boolean last){
+  boolean current = digitalRead(switchPin);
+  if(current != last){
+    delay(5);
+    current = digitalRead(switchPin);
   }
+  return current;
+}
+
+void loop() {
+  currentButton = debounce(lastButton);
+  if(lastButton == LOW && currentButton == HIGH){
+    isLedOn != isLedOn;
+  }
+  lastButton = currentButton;
   digitalWrite(ledPin, isLedOn);
 }
